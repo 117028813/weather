@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>openweathermap</title>
+  <style>
+    .weather {
+      display: flex;
+      flex-direction: column;
+    }
+    .weather .icon-temp {
+      display: flex;
+      align-items: center;
+    }
+    .weather .icon {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="weather">
+  <span class="city-country"></span>
+  <span class="icon-temp">
+    <img class="icon" src="" alt="" title="">
+    <span class="temp"></span>
+  </span>
+</div>
+
+<script>
+
+  
+
+  function ajax(options) {
+    var url = options.url || '';
+    var method = (options.method || 'get').toLowerCase();
+    var async = options.async === undefined && true;
+    var success = options.success || function () {};
+
+    xhr = new XMLHttpRequest();
+    xhr.open(method, url, async);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+          success(xhr.responseText);
+        }
+      }
+    }
+    xhr.send(method === 'get' ? null : data);
+  }
+
+  ajax({
+    url: 'http://api.openweathermap.org/data/2.5/weather?units=metric&lat=41.81&lon=123.43&APPID=fa714546c7d13260b94370286a5821dc',
+    success: function (response) {
+      response = JSON.parse(response);
+      
+      var weather = document.getElementsByClassName('weather')[0];
+      var cityCountry = weather.getElementsByClassName('city-country')[0];
+      var iconTemp = weather.getElementsByClassName('icon-temp')[0];
+      var icon = iconTemp.getElementsByClassName('icon')[0];
+      var temp = iconTemp.getElementsByClassName('temp')[0];
+
+      cityCountry.innerHTML = response.name + ', ' + response.sys.country;
+      icon.src = 'http://openweathermap.org/img/w/' + response.weather[0].icon + '.png';
+      icon.title = icon.alt = response.weather[0].description;
+      temp.innerHTML = response.main.temp + '&#176;C';
+    }
+  });
+</script>
+</body>
+</html>
